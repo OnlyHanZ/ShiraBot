@@ -939,33 +939,55 @@ esteh: 0,
  * Handle groups participants update
  * @param {import('@adiwajshing/baileys').BaileysEventMap<unknown>['group-participants.update']} groupsUpdate 
  */
-export async function participantsUpdate({ id, participants, action }) { 
-     if (opts['self']) 
-         return 
-     // if (id in conn.chats) return // First login will spam 
-     if (this.isInit) 
-         return 
-     if (global.db.data == null) 
-         await loadDatabase() 
-     let chat = global.db.data.chats[id] || {} 
-     let text = '' 
-     switch (action) { 
-         case 'add': 
-         case 'remove': 
-             if (chat.welcome) {
+export async function participantsUpdate({ id, participants, action }) {
+    if (opts['self'])
+        return
+    // if (id in conn.chats) return // First login will spam
+    if (this.isInit)
+        return
+    if (global.db.data == null)
+        await loadDatabase()
+    let chat = global.db.data.chats[id] || {}
+    let text = ''
+    switch (action) {
+                case 'add':
+        case 'remove':
+            if (chat.welcome) {
                 let groupMetadata = await this.groupMetadata(id) || (conn.chats[id] || {}).metadata
                 for (let user of participants) {
-                    let pp = './src/avatar_contact.png'
+                    let pp = 'https://telegra.ph/file/447785d61bcc9074cb227.png'
                     try {
                         pp = await this.profilePictureUrl(user, 'image')
                     } catch (e) {
                     } finally {
-                        text = (action === 'add' ? (chat.sWelcome || this.welcome || conn.welcome || 'Selamat Datang, @user!').replace('@subject', await this.getName(id)).replace('@desc', groupMetadata.desc?.toString() || 'unknow') :
-                            (chat.sBye || this.bye || conn.bye || 'Selamat tinggal, @user!')).replace('@user', `${this.getName(user)}`)
-                        this.sendFile(id, pp, 'pp.jpg', text, null, false, { mentions: [user] })
-                        }
-                 } 
-             } 
+                        text = (action === 'add' ? (chat.sWelcome || this.welcome || conn.welcome || 'Welcome, @user').replace('@subject', await this.getName(id)).replace('@desc', groupMetadata.desc?.toString() || 'unknow') :
+                            (chat.sBye || this.bye || conn.bye || 'Bye @user')).replace(/@user/g, '@' + user.split`@`[0])
+                        let wel = API('males', '/welcome2', {
+                                profile: pp,
+                                username: await this.getName(user),
+                                background: 'https://telegra.ph/file/7f827ca45c833542777f0.jpg',
+                                groupname: await this.getName(id),
+                                membercount: groupMetadata.participants.length
+                            })
+                            let lea = API('males', '/goodbye2', {
+                                profile: pp,
+                                username: await this.getName(user),
+                                background: 'https://telegra.ph/file/7f827ca45c833542777f0.jpg',
+                                groupname: await this.getName(id),
+                                membercount: groupMetadata.participants.length
+                            })
+                            
+ conn.sendButtonDoc(id, 'Group massege', text, action == 'add' ? 'ᴡᴇʟᴄᴏᴍᴇ' : 'sᴀʏᴏɴᴀʀᴀᴀ', action === 'add' ? '.intro' : 'Rimuru', fkontak, { contextInfo: { externalAdReply :{ 
+                mediaType: 1, 
+                title: this.getName(user), 
+                thumbnail: await(await fetch(pp)).buffer(), 
+                sourceUrl: 'https://chat.whatsapp.com/HJRUnvGtpR9Ah4EWM3GT91',
+                renderLargerThumbnail: true,
+            }}
+  })
+                    }
+                }
+            }
              break 
          case 'promote': 
              text = (chat.sPromote || this.spromote || conn.spromote || '@user ```is now Admin```') 
@@ -1027,43 +1049,83 @@ Untuk menghapus pesan yang dikirim BOT, reply pesan dengan perintah
 dfail
  */
 global.dfail = (type, m, conn) => {
-    let imgr = flaaa.getRandom()
-    let nmsr = `👋 Hai *@${m.sender.split("@")[0]}*, `
-    let msg = {
-        rowner: `${nmsr}\n 
-Perintah ini hanya dapat digunakan oleh *OWNER* !`,
-        owner: `${nmsr}\n
-Perintah ini hanya dapat digunakan oleh *Owner Bot* !`,
-        mods: `${nmsr}\n 
-Perintah ini hanya dapat digunakan oleh *Moderator* !`,
-        premium: `${nmsr}\n
-Perintah ini hanya untuk member *Premium* !`,
-        group: `${nmsr}\n
-Perintah ini hanya dapat digunakan di grup !`,
-        private: `${nmsr}\n
-Perintah ini hanya dapat digunakan di Chat Pribadi !`,
-        admin: `${nmsr}\n
-Perintah ini hanya untuk *Admin* grup !`,
-        botAdmin: `${nmsr}\n
-Jadikan bot sebagai *Admin* untuk menggunakan perintah ini !`,
-        nsfw: `${nmsr}\n
-NSFW tidak aktif, Silahkan hubungi Team Bot Discussion untuk mengaktifkan fitur ini !`,
-        rpg: `${nmsr}\n
-RPG tidak aktif, Silahkan hubungi Team Bot Discussion Untuk mengaktifkan fitur ini !`,
-        restrict: `${nmsr}\n
-Fitur ini di *disable* !`
-    }[type]
-    if (msg) return conn.sendButton(m.chat, danied, msg, `${imgr + 'Accses Danied'}`, [['MENU', '.menu'],['OWNER', '.menu']],m)
-    
-     let msgg = {
-    	unreg: `${nmsr}\nSilahkan daftar ke database terlebih dahulu untuk menggunakan bot ini lebih lanjut *Click button di bawah*\n\n*Kalian bisa ikuti langkah verify selanjutnya*\n\nLAKI-LAKI ATAU PEREMPUAN ?`
+const fgclink = {
+           "key": {
+               "fromMe": false,
+               "participant": "0@s.whatsapp.net",
+               "remoteJid": "0@s.whatsapp.net"
+           },
+           "message": {
+               "groupInviteMessage": {
+                   "groupJid": "6282127487538-1625305606@g.us",
+                   "inviteCode": "null",
+                   "groupName": "Halo", 
+                   "caption": wm, 
+                   'jpegThumbnail': fs.readFileSync('./media/ok.jpg')
+               }
+           }
+       }
+       let tag = `@${m.sender.replace(/@.+/, '')}`
+  let mentionedJid = [m.sender]
+    let rown = {
+        rowner: 'Printah ini hanya di gunakan oleh *Developer BOT* !'}[type]
+  if (rown) return conn.sendButtonDocAccess(m.chat, ucapan() + tag + '\n' + rown, 'Only Developer', 'Owner', '.owner', m, adReply)
+
+        
+let own = {
+owner: 'Printah ini hanya di gunakan oleh *Owner* !'}[type]
+  if (own) return conn.sendButtonDocAccess(m.chat, ucapan() + tag + '\n' + own, 'Only OWNER', 'Owner', '.owner', m, adReply)
+
+let mod = {
+mods: 'Printah ini hanya di gunakan oleh *Moderator BOT* !'}[type]
+  if (mod) return conn.sendButtonDocAccess(m.chat, ucapan() + tag + '\n' + mod, 'Only Moderator', 'MENU', '.menu', m, adReply)
+let prm = {
+        premium: 'Printah ini hanya di gunakan oleh member *Premium* !'}[type]
+  if (prm) return conn.sendButtonDocAccess(m.chat, ucapan() + tag + '\n' + prm, 'Only Premium', 'Beli Prem', '.sewa', m, adReply)
+
+let gc = {
+        group: 'Printah ini hanya dapat di gunakan di dalam *Group* !'
+        }[type]
+  if (gc) return conn.sendButtonDocAccess(m.chat, ucapan() + tag + '\n' + gc, 'Only Group', 'MENU', '.menu', m, adReply)
+
+let msg = {
+        private: 'Printah ini hanya dapat di gunakan di *Private Chat !*',
+        admin: 'Printah ini hanya di gunakan oleh *Admin* !',
+        botAdmin: 'Printah ini hanya di gunakan ketika bot menjadi *Admin Group* !',
+        restrict: 'Restrict belum di nyalakan di chat ini !'}[type]
+  /*  if (msg) return conn.sendButtonDoc(m.chat, msg, wm, 'Menu', '.menu', fgclink)*/
+  if (msg) return conn.sendButtonDocAccess(m.chat, ucapan() + tag + '\n' + msg, wm, 'MENU', '.menu', m, adReply)
+  
+  
+    let msgg = {
+    	unreg: 'Silahkan daftar untuk menggunakan fitur ini dengan cara mengetik:\n\n*#daftar nama.umur*\n\nContoh: *#daftar kurumi.18*!'
 }[type]
-if (msgg) return conn.sendButton(m.chat, `${global.htki} VERIFY ${global.htka}`, msgg, `${imgr + 'Verify'}`, [['LAKI-LAKI', '/verify'],['PEREMPUAN', '/verify']],m)
-}    
-    
+if (msgg) return conn.sendButtonDocAccess(m.chat, ucapan() + tag + '\n' + msgg, 'Silahkan Verifikasi', '❮ ᴠᴇʀɪғʏ ❯', '.verify', m, adReply)
+}
+
+function ucapan() {
+  const time = moment.tz('Asia/Jakarta').format('HH')
+  let res = "Sudah Dini Hari Kok Belum Tidur Kak? 🥱"
+  if (time >= 4) {
+    res = "Pagi Lord 🌄"
+  }
+  if (time >= 10) {
+    res = "Selamat Siang Kak ☀️"
+  }
+  if (time >= 15) {
+    res = "Selamat Sore Kak 🌇"
+  }
+  if (time >= 18) {
+    res = "Malam Kak 🌙"
+  }
+  return res
+}
+function pickRandom(list) {
+     return list[Math.floor(Math.random() * list.length)]
+     }
 let file = global.__filename(import.meta.url, true)
 watchFile(file, async () => {
     unwatchFile(file)
     console.log(chalk.redBright("Update 'handler.js'"))
     if (global.reloadHandler) console.log(await global.reloadHandler())
-}) 
+})
